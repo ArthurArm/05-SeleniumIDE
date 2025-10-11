@@ -21,7 +21,22 @@ public class TC01IfUserIsInvalidTryAgainTest
     [SetUp]
     public void SetUp()
     {
-        driver = new ChromeDriver();
+        var options = new ChromeOptions();
+        
+        // Add headless mode for CI/CD environments
+        options.AddArgument("--headless=new");
+        
+        // Required arguments for CI/CD and containerized environments
+        options.AddArgument("--no-sandbox");
+        options.AddArgument("--disable-dev-shm-usage");
+        options.AddArgument("--disable-gpu");
+        
+        // Use a unique temporary user data directory
+        string tempUserDataDir = Path.Combine(Path.GetTempPath(), $"chrome_test_{Guid.NewGuid()}");
+        options.AddArgument($"--user-data-dir={tempUserDataDir}");
+        
+        driver = new ChromeDriver(options);
+        driver.Manage().Window.Maximize();
         js = (IJavaScriptExecutor)driver;
         vars = new Dictionary<string, object>();
     }
@@ -29,7 +44,11 @@ public class TC01IfUserIsInvalidTryAgainTest
     [TearDown]
     protected void TearDown()
     {
-        driver.Quit();
+        if (driver != null)
+        {
+            driver.Quit();
+            driver.Dispose();
+        }
     }
 
     [Test]
