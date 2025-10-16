@@ -4,14 +4,14 @@ pipeline {
         stage('Install Chrome and ChromeDriver') {
             steps {
                 sh '''
-                sudo apt-get update -y
-                sudo apt-get install -y wget unzip curl
-                wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-                sudo apt-get install -y ./google-chrome-stable_current_amd64.deb
-                VER=$(google-chrome --version | grep -oE "[0-9]+" | head -1)
-                wget -q -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/${VER}/chromedriver_linux64.zip
-                sudo unzip -q /tmp/chromedriver.zip -d /usr/local/bin/
-                sudo chmod +x /usr/local/bin/chromedriver
+                    apt-get update -y
+                    apt-get install -y wget unzip google-chrome-stable
+                    
+                    # Install ChromeDriver
+                    wget -O /tmp/chromedriver.zip https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/120.0.6099.109/linux64/chromedriver-linux64.zip
+                    unzip -o /tmp/chromedriver.zip -d /tmp/
+                    mv /tmp/chromedriver-linux64/chromedriver /usr/local/bin/
+                    chmod +x /usr/local/bin/chromedriver
                 '''
             }
         }
